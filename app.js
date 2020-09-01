@@ -20,7 +20,7 @@ const { response } = require("express");
 const app = express();
 app.use(bodyParser.urlencoded({extended:true}));
 
-//setting express to public will help run html load javascript
+//setting express to public will help run html load javascript and css and images
 app.use(express.static("public"));
 
 app.get("/",function(req,res){
@@ -34,6 +34,7 @@ app.post("/",function(req,res){
     const lastName = req.body.lastName;
     const email = req.body.inputEmail;
 //**********converting  the data into Java Object */
+//the data structure was determined by the mailchimp dev docs
     const data = {
         members: [
             {
@@ -70,15 +71,17 @@ const requestMailChimp = https.request(url,options,function(response){
         console.log(JSON.parse(data));
     })
 })
+//I think this is writing the data on hyper terminal
 requestMailChimp.write(jsonData);
 requestMailChimp.end();
 })
 
 app.post("/failure",function(req,res){
+    //as soon as the button is clicked the page is sent back to home page
     res.redirect("/");
 })
-
-app.listen(3000, function(){
+//setting up dynamic port setup with heroku
+app.listen(process.env.PORT || 3000, function(){
     console.log("Server is running on port 3000.");
 })
 
